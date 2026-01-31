@@ -177,7 +177,7 @@ class GoogleApi
   GAuth = Google::Auth
   GCal  = Google::Apis::CalendarV3
 
-  Browser = 'chromium'
+  Browser = 'ruby chrome-fake.rb'
 
   def loopback_ip_flow url
     puts 'start: Loopback Interface Redirection'
@@ -225,10 +225,10 @@ class GoogleApi
 
     puts 'start Browser'
     # Process: Browser
-    cmd = "'#{Browser}' '#{url}'"
+    cmd = "#{Browser} '#{url}'"
     p cmd
-    browser_io  = IO.popen( cmd, err: '/dev/null' )
-    browser_pid = browser_io.pid
+    browser_pid = spawn( cmd )
+
     code = nil
 
     #
@@ -256,8 +256,9 @@ class GoogleApi
     puts "srvlet: TERMINATED"
 
     if browser_pid
-      puts 'TERMINATING browser...'
-      Process.kill( 'SIGQUIT', browser_pid )
+      # system( "ps" )
+      puts "TERMINATING browser...#{browser_pid}"
+      Process.kill( 'SIGQUIT', browser_pid ) 
     end
 
     browser_thr.join
