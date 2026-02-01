@@ -65,33 +65,32 @@ input = ->(type,text) do
   elm.focus.type( "#{text}" ); sleep 0.5
 end
 
-click = ->( text ) do
-  Log.info "click '#{text}'NEXT"
-  cont  = @page.xpath( "//button[contains(., '#{text}')]" )[0]; sleep 0.2
-  cont.click
-  sleep 3
-end
-
+last_text = ""
 click = ->( text ) do
   Log.info "#{text}"
   cont = nil
   loop do
+    last_text = @page.evaluate('document.body.innerText')
     cont  = @page.xpath( "//button[contains(., '#{text}')]" )[0]
     break if cont
     sleep 0.5
   end
   cont.click
-  sleep 3
 end
 
 input.( "email", "light299792@gmail.com" )
-click.( "次へ" )
+click.( "次へ" ); sleep 3
 
 input.( "password", "Saiki0312" )
-click.( "次へ" )
+click.( "次へ" ); sleep 3
 
-#click.( "続行" )
-#click.( "続行" )
+click.( "続行" )
+last_text.split( /\n/ ).each { |s| puts "\t#{s}" }
+sleep 3
+
+click.( "続行" )
+last_text.split( /\n/ ).each { |s| puts "\t#{s}" }
+
 
 loop do
   begin
